@@ -1044,7 +1044,10 @@ ngx_event_connections(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     value = cf->args->elts;
     ecf->connections = ngx_atoi(value[1].data, value[1].len);
-    if (ecf->connections == (ngx_uint_t) NGX_ERROR) {
+    if (ecf->connections == (ngx_uint_t) NGX_ERROR
+        || ecf->connections > NGX_MAX_SIZE_T_VALUE / sizeof(ngx_connection_t)
+        || ecf->connections > NGX_MAX_SIZE_T_VALUE / sizeof(ngx_event_t))
+    {
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "invalid number \"%V\"", &value[1]);
 
