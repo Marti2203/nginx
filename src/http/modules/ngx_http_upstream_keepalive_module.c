@@ -597,7 +597,10 @@ ngx_http_upstream_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     n = ngx_atoi(value[1].data, value[1].len);
 
-    if (n == NGX_ERROR) {
+    if (n == NGX_ERROR
+        || (size_t) n > NGX_MAX_SIZE_T_VALUE
+                        / sizeof(ngx_http_upstream_keepalive_cache_t))
+    {
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "invalid value \"%V\" in \"%V\" directive",
                            &value[1], &cmd->name);
